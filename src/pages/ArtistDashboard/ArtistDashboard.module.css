@@ -1,0 +1,226 @@
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 2rem 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.gated {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 60vh;
+  color: #64748b;
+  text-align: center;
+}
+.gatedIcon { font-size: 3rem; }
+.gated h2 { color: #94a3b8; margin: 0; }
+.gated p { margin: 0; }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.address { font-size: 0.85rem; color: #64748b; margin: 0.3rem 0 0; font-family: monospace; }
+
+/* Balance card */
+.balanceCard {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  display: flex;
+  divide: horizontal;
+  overflow: hidden;
+}
+
+.balanceItem {
+  flex: 1;
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.balanceDivider {
+  width: 1px;
+  background: rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+
+.balanceLabel {
+  font-size: 0.75rem;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.balanceValue {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #a855f7;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.balanceSub {
+  font-size: 0.78rem;
+  color: #475569;
+  margin: 0;
+}
+
+/* Section */
+.section {}
+.sectionTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin: 0 0 1.25rem;
+}
+
+.loading { display: flex; justify-content: center; padding: 2rem 0; }
+
+.empty {
+  text-align: center;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  color: #64748b;
+  background: rgba(255,255,255,0.02);
+  border-radius: 12px;
+}
+.empty span { font-size: 2.5rem; }
+.empty p { margin: 0; }
+
+/* Track list */
+.trackList { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.trackRow {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  transition: border-color 0.2s;
+}
+
+.trackRow:hover { border-color: rgba(168,85,247,0.2); }
+
+.trackLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.trackCover {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #0d0b14;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.trackCover img { width: 100%; height: 100%; object-fit: cover; }
+
+.trackName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trackMeta { font-size: 0.78rem; color: #64748b; margin: 0.2rem 0 0; }
+
+.trackStats {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-shrink: 0;
+}
+
+.stat { text-align: center; }
+
+.statVal {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.statLbl {
+  font-size: 0.7rem;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Info section */
+.infoSection {}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.infoCard {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.infoIcon { font-size: 1.75rem; }
+
+.infoCard h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+.infoCard p {
+  font-size: 0.83rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .trackStats { gap: 1rem; }
+  .infoGrid { grid-template-columns: 1fr; }
+  .balanceCard { flex-direction: column; }
+  .balanceDivider { width: 100%; height: 1px; }
+}

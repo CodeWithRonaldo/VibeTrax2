@@ -1,0 +1,140 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      { "name": "_musd", "type": "address" },
+      { "name": "_platformWallet", "type": "address" }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "mintTrack",
+    "inputs": [
+      { "name": "metadataURI", "type": "string" },
+      { "name": "audioURI", "type": "string" },
+      { "name": "copies", "type": "uint256" },
+      { "name": "pricePerCopy", "type": "uint256" },
+      { "name": "collaborators", "type": "address[]" },
+      { "name": "primaryShares", "type": "uint256[]" },
+      { "name": "collaboratorsGetRoyalty", "type": "bool" }
+    ],
+    "outputs": [{ "name": "trackId", "type": "uint256" }],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "buyTrack",
+    "inputs": [{ "name": "trackId", "type": "uint256" }],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "listForResale",
+    "inputs": [
+      { "name": "tokenId", "type": "uint256" },
+      { "name": "price", "type": "uint256" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "buyResale",
+    "inputs": [{ "name": "tokenId", "type": "uint256" }],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "cancelListing",
+    "inputs": [{ "name": "tokenId", "type": "uint256" }],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "getTrack",
+    "inputs": [{ "name": "trackId", "type": "uint256" }],
+    "outputs": [
+      { "name": "artist", "type": "address" },
+      { "name": "metadataURI", "type": "string" },
+      { "name": "audioURI", "type": "string" },
+      { "name": "copies", "type": "uint256" },
+      { "name": "sold", "type": "uint256" },
+      { "name": "pricePerCopy", "type": "uint256" },
+      { "name": "collaboratorsGetRoyalty", "type": "bool" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getListing",
+    "inputs": [{ "name": "tokenId", "type": "uint256" }],
+    "outputs": [
+      { "name": "seller", "type": "address" },
+      { "name": "price", "type": "uint256" },
+      { "name": "active", "type": "bool" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "ownerOf",
+    "inputs": [{ "name": "tokenId", "type": "uint256" }],
+    "outputs": [{ "name": "", "type": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "trackCount",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "tokenToTrack",
+    "inputs": [{ "name": "tokenId", "type": "uint256" }],
+    "outputs": [{ "name": "", "type": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "TrackMinted",
+    "inputs": [
+      { "name": "trackId", "type": "uint256", "indexed": true },
+      { "name": "artist", "type": "address", "indexed": true },
+      { "name": "copies", "type": "uint256", "indexed": false },
+      { "name": "pricePerCopy", "type": "uint256", "indexed": false }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "TrackPurchased",
+    "inputs": [
+      { "name": "tokenId", "type": "uint256", "indexed": true },
+      { "name": "buyer", "type": "address", "indexed": true },
+      { "name": "price", "type": "uint256", "indexed": false }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "ListedForResale",
+    "inputs": [
+      { "name": "tokenId", "type": "uint256", "indexed": true },
+      { "name": "seller", "type": "address", "indexed": true },
+      { "name": "price", "type": "uint256", "indexed": false }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "ResalePurchased",
+    "inputs": [
+      { "name": "tokenId", "type": "uint256", "indexed": true },
+      { "name": "buyer", "type": "address", "indexed": true },
+      { "name": "price", "type": "uint256", "indexed": false }
+    ]
+  }
+]

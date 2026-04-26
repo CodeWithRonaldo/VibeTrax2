@@ -1,0 +1,240 @@
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 2rem 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.gated {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 60vh;
+  color: #64748b;
+  text-align: center;
+}
+.gated span { font-size: 3rem; }
+.gated h2 { color: #94a3b8; margin: 0; }
+.gated p { margin: 0; }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.address { font-size: 0.85rem; color: #64748b; margin: 0.3rem 0 0; font-family: monospace; }
+
+/* Balance bar */
+.balanceBar {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  display: flex;
+  overflow: hidden;
+}
+
+.balItem {
+  flex: 1;
+  padding: 1.5rem 2rem;
+}
+
+.balDivider {
+  width: 1px;
+  background: rgba(255,255,255,0.08);
+}
+
+.balLabel {
+  font-size: 0.75rem;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.4rem;
+}
+
+.balValue {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #a855f7;
+  margin: 0;
+}
+
+/* Section */
+.section {}
+
+.sectionTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin: 0 0 0.4rem;
+}
+
+.sectionDesc { font-size: 0.85rem; color: #64748b; margin: 0 0 1.5rem; }
+
+.loading { display: flex; justify-content: center; padding: 3rem; }
+
+.empty {
+  text-align: center;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  color: #64748b;
+  background: rgba(255,255,255,0.02);
+  border-radius: 12px;
+}
+.empty span { font-size: 2.5rem; }
+.empty p { margin: 0; }
+
+/* Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+/* NFT Card */
+.nftCard {
+  background: #13111c;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.nftCard:hover {
+  border-color: rgba(168,85,247,0.25);
+  box-shadow: 0 4px 24px rgba(124,58,237,0.15);
+}
+
+.nftCoverWrap {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #0d0b14;
+}
+
+.nftCover { width: 100%; height: 100%; object-fit: cover; }
+
+.nftCoverPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  background: linear-gradient(135deg, #1a0a2e, #2d1060);
+}
+
+.listedBadge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: rgba(74,222,128,0.85);
+  color: #0f172a;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.nftInfo {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.nftTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tokenId { font-size: 0.78rem; color: #475569; font-family: monospace; }
+
+.nftName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nftArtist { font-size: 0.8rem; color: #64748b; margin: 0; }
+
+.listedPrice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.listedPrice strong { color: #4ade80; }
+
+.nftActions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.txStatus {
+  font-size: 0.78rem;
+  margin: 0;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+}
+.txOk { color: #4ade80; background: rgba(74,222,128,0.08); }
+.txError { color: #f87171; background: rgba(248,113,113,0.08); }
+
+/* Resale form */
+.resaleForm { display: flex; flex-direction: column; gap: 1rem; }
+
+.resaleDesc { font-size: 0.88rem; color: #94a3b8; margin: 0; }
+
+.breakdown {
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.breakdownRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.breakdownTotal {
+  color: #a855f7;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+@media (max-width: 768px) {
+  .balanceBar { flex-direction: column; }
+  .balDivider { width: 100%; height: 1px; }
+}

@@ -1,0 +1,33 @@
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.fields {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.addressInput {
+  flex: 1;
+}
+
+.shareInput {
+  width: 120px;
+}
+
+.shareWrap {
+  flex-shrink: 0;
+}
+
+.removeBtn {
+  color: #f87171 !important;
+  margin-top: 0.4rem;
+  padding: 0.4rem !important;
+}
+
+.removeBtn:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
+}
