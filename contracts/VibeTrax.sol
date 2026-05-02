@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 /**
  * @title VibeTrax
@@ -69,7 +69,7 @@ contract VibeTrax is ERC721, Ownable, ReentrancyGuard {
     // ─── Constructor ──────────────────────────────────────────────────────────
     constructor(address _musd, address _platformWallet)
         ERC721("VibeTrax Music NFT", "VTRX")
-        Ownable(msg.sender)
+        Ownable()
     {
         musd = IERC20(_musd);
         platformWallet = _platformWallet;
@@ -309,7 +309,7 @@ contract VibeTrax is ERC721, Ownable, ReentrancyGuard {
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
-        _requireOwned(tokenId);
+        require(_exists(tokenId), "VibeTrax: URI query for nonexistent token");
         uint256 trackId = tokenToTrack[tokenId];
         return tracks[trackId].metadataURI;
     }

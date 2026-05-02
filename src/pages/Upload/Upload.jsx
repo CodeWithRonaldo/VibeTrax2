@@ -110,19 +110,17 @@ export default function Upload() {
       })
 
       setUploadStep('Minting NFT on Mezo...')
+      // Only pass actual collaborators — the contract gives artist the remainder automatically
       const collabAddresses = collaborators.map((c) => c.address)
-      // Shares in basis points: artist gets myShare%, collabs get their shares
-      // We pass all parties: [artist, ...collabs] with [myShare, ...collabShares]
-      const allAddresses = [address, ...collabAddresses]
-      const allShares = [myShare * 100, ...collaborators.map((c) => parseFloat(c.share) * 100)]
+      const collabShares = collaborators.map((c) => Math.round(parseFloat(c.share) * 100))
 
       await mintTrack({
         metadataURI,
         audioURI,
         copies: form.copies,
         pricePerCopy: form.price,
-        collaborators: allAddresses,
-        primaryShares: allShares,
+        collaborators: collabAddresses,
+        primaryShares: collabShares,
         collaboratorsGetRoyalty,
       })
 

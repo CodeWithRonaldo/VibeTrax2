@@ -20,7 +20,7 @@ export default function TrackCardFull({ trackId, filter, search }) {
 
   if (!track) return null
 
-  const [artist, metadataURI, , copies, sold, pricePerCopy] = track
+  const [artist, , , copies, sold, pricePerCopy] = track
   const available = Number(copies) - Number(sold)
   const isSoldOut = available === 0
 
@@ -51,7 +51,7 @@ export default function TrackCardFull({ trackId, filter, search }) {
           <span className={styles.copies}>{available}/{Number(copies)} left</span>
         </div>
         <h3 className={styles.title}>{meta?.name || 'Loading...'}</h3>
-        <p className={styles.artist}>{meta?.artist || `${artist.slice(0, 6)}...${artist.slice(-4)}`}</p>
+        <p className={styles.artist}>{meta?.artist || `${artist?.slice(0, 6)}...${artist?.slice(-4)}`}</p>
         <div className={styles.bottom}>
           <div>
             <p className={styles.priceLabel}>Price</p>

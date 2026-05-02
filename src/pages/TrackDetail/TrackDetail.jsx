@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useAccount } from 'wagmi'
+import { useAccount, usePublicClient } from 'wagmi'
 import { useReadContract } from 'wagmi'
 import { parseUnits } from 'viem'
 import VibeTraxABI from '../../contracts/abi/VibeTrax.json'
@@ -20,6 +20,7 @@ import styles from './TrackDetail.module.css'
 export default function TrackDetail() {
   const { trackId } = useParams()
   const { address, isConnected } = useAccount()
+  const publicClient = usePublicClient()
   const [resalePrice, setResalePrice] = useState('')
   const [showResaleModal, setShowResaleModal] = useState(false)
   const [txStatus, setTxStatus] = useState('')
@@ -56,7 +57,7 @@ export default function TrackDetail() {
     )
   }
 
-  const [artist, metadataURI, audioURI, copies, sold, pricePerCopy, collaboratorsGetRoyalty] = track
+  const [artist, , audioURI, copies, sold, pricePerCopy, collaboratorsGetRoyalty] = track
   const available = Number(copies) - Number(sold)
   const isSoldOut = available === 0
   const cover = meta?.image ? resolveIPFS(meta.image) : null
@@ -66,9 +67,12 @@ export default function TrackDetail() {
   const handleBuy = async () => {
     try {
       setTxStatus('Approving MUSD...')
-      await approve()
+      const approveTxHash = await approve()
+      // Wait for approval to be confirmed on-chain before buying
+      await publicClient.waitForTransactionReceipt({ hash: approveTxHash })
       setTxStatus('Purchasing...')
-      await buyTrack(trackId)
+      const buyTxHash = await buyTrack(trackId)
+      await publicClient.waitForTransactionReceipt({ hash: buyTxHash })
       setTxStatus('Purchase successful!')
       refetch()
     } catch (e) {

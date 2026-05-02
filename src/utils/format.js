@@ -38,10 +38,12 @@ export function formatDate(timestamp) {
 }
 
 export function calcPlatformFee(price) {
+  if (!price && price !== 0n) return 0n
   return (BigInt(price) * 100n) / 10000n
 }
 
 export function calcRoyalty(price) {
+  if (!price && price !== 0n) return 0n
   return (BigInt(price) * 100n) / 10000n
 }
 

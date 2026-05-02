@@ -57,9 +57,9 @@ function OwnedNFTCard({ tokenId, ownerAddress }) {
   if (!owner || owner.toLowerCase() !== ownerAddress?.toLowerCase()) return null
   if (!track) return null
 
-  const [artist, , audioURI, copies, sold, pricePerCopy] = track
-  const isListed = listing?.[2]
-  const listedPrice = listing?.[1]
+  const [artist, , audioURI, , , pricePerCopy] = track
+  const isListed = listing?.active
+  const listedPrice = listing?.price
   const minPrice = formatMUSD(pricePerCopy)
   const cover = meta?.image ? resolveIPFS(meta.image) : null
   const audioSrc = resolveIPFS(audioURI)
