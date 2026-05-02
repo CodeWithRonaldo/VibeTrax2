@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAccount, useReadContract } from 'wagmi'
+import { useQueryClient } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import VibeTraxABI from '../../contracts/abi/VibeTrax.json'
 import { VIBETRAX_ADDRESS } from '../../config/contracts'
@@ -54,7 +55,7 @@ function OwnedNFTCard({ tokenId, ownerAddress }) {
   const { listForResale, isPending: isListing } = useListForResale()
   const { cancelListing, isPending: isCancelling } = useCancelListing()
 
-  if (!owner || owner.toLowerCase() !== ownerAddress?.toLowerCase()) return null
+  if (!owner || !ownerAddress || owner.toLowerCase() !== ownerAddress.toLowerCase()) return null
   if (!track) return null
 
   const [artist, , audioURI, , , pricePerCopy] = track
@@ -203,7 +204,13 @@ function OwnedNFTCard({ tokenId, ownerAddress }) {
 
 export default function CollectorDashboard() {
   const { address, isConnected } = useAccount()
+  const queryClient = useQueryClient()
   const { data: musdBalance } = useMUSDBalance(address)
+
+  // Invalidate all contract reads when wallet changes so ownerOf refetches
+  useEffect(() => {
+    queryClient.invalidateQueries()
+  }, [address])
 
   const { data: trackCount, isLoading } = useReadContract({
     address: VIBETRAX_ADDRESS,

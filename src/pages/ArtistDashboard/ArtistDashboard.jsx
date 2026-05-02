@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react'
 import { useAccount } from 'wagmi'
 import { useReadContract } from 'wagmi'
+import { useQueryClient } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import VibeTraxABI from '../../contracts/abi/VibeTrax.json'
 import { VIBETRAX_ADDRESS } from '../../config/contracts'
@@ -12,7 +14,7 @@ import Button from '../../components/common/Button/Button'
 import Spinner from '../../components/common/Spinner/Spinner'
 import styles from './ArtistDashboard.module.css'
 
-function ArtistTrackRow({ trackId, artistAddress }) {
+function ArtistTrackRow({ trackId, artistAddress, onVisible }) {
   const { data: track } = useReadContract({
     address: VIBETRAX_ADDRESS,
     abi: VibeTraxABI,
@@ -22,11 +24,17 @@ function ArtistTrackRow({ trackId, artistAddress }) {
 
   const { data: meta } = useMetadata(track ? track[1] : null)
 
-  if (!track) return null
+  const artist = track?.[0]
+  const isOwner = !!track && !!artistAddress && artist?.toLowerCase() === artistAddress?.toLowerCase()
 
-  const [artist, , , copies, sold, pricePerCopy] = track
-  if (artist?.toLowerCase() !== artistAddress?.toLowerCase()) return null
+  // Must be in a useEffect — never call state setters during render
+  useEffect(() => {
+    if (isOwner) onVisible?.(trackId)
+  }, [isOwner, trackId])
 
+  if (!track || !artistAddress || !isOwner) return null
+
+  const [, , , copies, sold, pricePerCopy] = track
   const available = Number(copies) - Number(sold)
   const revenue = BigInt(pricePerCopy) * BigInt(sold)
   const cover = meta?.image ? resolveIPFS(meta.image) : null
@@ -68,7 +76,13 @@ function ArtistTrackRow({ trackId, artistAddress }) {
 
 export default function ArtistDashboard() {
   const { address, isConnected } = useAccount()
+  const queryClient = useQueryClient()
   const { data: musdBalance } = useMUSDBalance(address)
+
+  // Invalidate all contract reads when wallet changes
+  useEffect(() => {
+    queryClient.invalidateQueries()
+  }, [address])
 
   const { data: trackCount, isLoading } = useReadContract({
     address: VIBETRAX_ADDRESS,
@@ -88,6 +102,19 @@ export default function ArtistDashboard() {
 
   const count = trackCount ? Number(trackCount) : 0
   const trackIds = Array.from({ length: count }, (_, i) => i)
+  const [visibleTrackIds, setVisibleTrackIds] = useState(new Set())
+
+  // Reset when address or trackCount changes
+  useEffect(() => { setVisibleTrackIds(new Set()) }, [address, count])
+
+  const handleTrackVisible = (trackId) => {
+    setVisibleTrackIds((prev) => {
+      if (prev.has(trackId)) return prev
+      const next = new Set(prev)
+      next.add(trackId)
+      return next
+    })
+  }
 
   return (
     <div className={styles.page}>
@@ -111,8 +138,8 @@ export default function ArtistDashboard() {
         <div className={styles.balanceDivider} />
         <div className={styles.balanceItem}>
           <p className={styles.balanceLabel}>Your Tracks</p>
-          <p className={styles.balanceValue}>{count}</p>
-          <p className={styles.balanceSub}>Total minted</p>
+          <p className={styles.balanceValue}>{visibleTrackIds.size}</p>
+          <p className={styles.balanceSub}>Tracks you uploaded</p>
         </div>
         <div className={styles.balanceDivider} />
         <div className={styles.balanceItem}>
@@ -137,7 +164,7 @@ export default function ArtistDashboard() {
         ) : (
           <div className={styles.trackList}>
             {trackIds.map((id) => (
-              <ArtistTrackRow key={id} trackId={id} artistAddress={address} />
+              <ArtistTrackRow key={id} trackId={id} artistAddress={address} onVisible={handleTrackVisible} />
             ))}
           </div>
         )}
