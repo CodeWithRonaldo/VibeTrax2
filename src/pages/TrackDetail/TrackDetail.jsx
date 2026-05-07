@@ -6,7 +6,7 @@ import { parseUnits } from 'viem'
 import VibeTraxABI from '../../contracts/abi/VibeTrax.json'
 import { VIBETRAX_ADDRESS } from '../../config/contracts'
 import { useMetadata } from '../../hooks/useMetadata'
-import { useBuyTrack, useListForResale, useBuyResale, useCancelListing, useApproveMUSD } from '../../hooks/useVibeTrax'
+import { useBuyTrack, useListForResale, useBuyResale, useCancelListing, useApproveMUSD, useMUSDAllowance } from '../../hooks/useVibeTrax'
 import { formatMUSD, shortenAddress, calcPlatformFee, calcRoyalty, calcSellerProceeds } from '../../utils/format'
 import { resolveIPFS } from '../../utils/pinata'
 import Button from '../../components/common/Button/Button'
@@ -39,6 +39,7 @@ export default function TrackDetail() {
   const { listForResale, isPending: isListing } = useListForResale()
   const { buyResale, isPending: isBuyingResale } = useBuyResale()
   const { cancelListing, isPending: isCancelling } = useCancelListing()
+  const { data: allowance } = useMUSDAllowance(address)
 
   if (isLoading) {
     return (
@@ -57,11 +58,11 @@ export default function TrackDetail() {
     )
   }
 
-  const [artist, , audioURI, copies, sold, pricePerCopy, collaboratorsGetRoyalty] = track
+  const [artist, , standardAudioURI, , copies, sold, pricePerCopy] = track
   const available = Number(copies) - Number(sold)
   const isSoldOut = available === 0
   const cover = meta?.image ? resolveIPFS(meta.image) : null
-  const audioSrc = resolveIPFS(audioURI)
+  const audioSrc = resolveIPFS(standardAudioURI)
   const isArtist = address?.toLowerCase() === artist?.toLowerCase()
 
   const handleBuy = async () => {
@@ -187,6 +188,13 @@ export default function TrackDetail() {
                 {txStatus}
               </p>
             )}
+
+            {/* Debug: Show allowance */}
+            {isConnected && allowance !== undefined && (
+              <p style={{ fontSize: '12px', color: '#999', marginTop: '10px' }}>
+                Current allowance: {allowance > 0n ? 'Set ✓' : 'Not set ✗'} ({allowance?.toString()})
+              </p>
+            )}
           </div>
 
           {/* Resale section — show if connected owner */}
@@ -216,10 +224,6 @@ export default function TrackDetail() {
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Royalties</span>
               <span className={styles.infoValue}>1%</span>
-            </div>
-            <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Collaborator royalties</span>
-              <span className={styles.infoValue}>{collaboratorsGetRoyalty ? 'Yes' : 'Artist only'}</span>
             </div>
           </div>
 

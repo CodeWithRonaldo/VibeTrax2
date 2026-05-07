@@ -34,7 +34,7 @@ function ArtistTrackRow({ trackId, artistAddress, onVisible }) {
 
   if (!track || !artistAddress || !isOwner) return null
 
-  const [, , , copies, sold, pricePerCopy] = track
+  const [, , , , copies, sold, pricePerCopy] = track
   const available = Number(copies) - Number(sold)
   const revenue = BigInt(pricePerCopy) * BigInt(sold)
   const cover = meta?.image ? resolveIPFS(meta.image) : null

@@ -28,7 +28,6 @@ export default function Upload() {
   const [coverPreview, setCoverPreview] = useState(null)
   const [collaborators, setCollaborators] = useState([])
   const [artistShare, setArtistShare] = useState(100)
-  const [collaboratorsGetRoyalty, setCollaboratorsGetRoyalty] = useState(false)
   const [uploadStep, setUploadStep] = useState('')
   const [error, setError] = useState('')
 
@@ -110,18 +109,17 @@ export default function Upload() {
       })
 
       setUploadStep('Minting NFT on Mezo...')
-      // Only pass actual collaborators — the contract gives artist the remainder automatically
       const collabAddresses = collaborators.map((c) => c.address)
       const collabShares = collaborators.map((c) => Math.round(parseFloat(c.share) * 100))
 
       await mintTrack({
         metadataURI,
-        audioURI,
+        standardAudioURI: audioURI,
+        encryptedPremiumCID: audioURI,
         copies: form.copies,
         pricePerCopy: form.price,
         collaborators: collabAddresses,
-        primaryShares: collabShares,
-        collaboratorsGetRoyalty,
+        collaboratorShares: collabShares,
       })
 
       setUploadStep('Minted successfully!')
@@ -282,22 +280,6 @@ export default function Upload() {
                 </div>
               )}
 
-              {collaborators.length > 0 && (
-                <div className={styles.royaltyToggle}>
-                  <label className={styles.toggleLabel}>
-                    <input
-                      type="checkbox"
-                      checked={collaboratorsGetRoyalty}
-                      onChange={(e) => setCollaboratorsGetRoyalty(e.target.checked)}
-                      className={styles.checkbox}
-                    />
-                    <span>Collaborators receive 1% resale royalty (split by share ratio)</span>
-                  </label>
-                  <p className={styles.royaltyHint}>
-                    If unchecked, you (the artist) receive the full 1% royalty on resales.
-                  </p>
-                </div>
-              )}
             </div>
 
             {error && <p className={styles.error}>{error}</p>}

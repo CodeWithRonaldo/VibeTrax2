@@ -9,40 +9,33 @@
   },
   {
     "type": "function",
-    "name": "mintTrack",
+    "name": "createTrack",
     "inputs": [
       { "name": "metadataURI", "type": "string" },
-      { "name": "audioURI", "type": "string" },
+      { "name": "standardAudioURI", "type": "string" },
+      { "name": "encryptedPremiumCID", "type": "string" },
       { "name": "copies", "type": "uint256" },
       { "name": "pricePerCopy", "type": "uint256" },
       { "name": "collaborators", "type": "address[]" },
-      { "name": "primaryShares", "type": "uint256[]" },
-      { "name": "collaboratorsGetRoyalty", "type": "bool" }
+      { "name": "collaboratorShares", "type": "uint256[]" }
     ],
     "outputs": [{ "name": "trackId", "type": "uint256" }],
     "stateMutability": "nonpayable"
   },
   {
     "type": "function",
-    "name": "buyTrack",
+    "name": "buyPrimaryCopy",
     "inputs": [{ "name": "trackId", "type": "uint256" }],
     "outputs": [],
     "stateMutability": "nonpayable"
   },
   {
     "type": "function",
-    "name": "listForResale",
+    "name": "listForSale",
     "inputs": [
       { "name": "tokenId", "type": "uint256" },
       { "name": "price", "type": "uint256" }
     ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "buyResale",
-    "inputs": [{ "name": "tokenId", "type": "uint256" }],
     "outputs": [],
     "stateMutability": "nonpayable"
   },
@@ -55,22 +48,40 @@
   },
   {
     "type": "function",
+    "name": "buySecondaryCopy",
+    "inputs": [{ "name": "tokenId", "type": "uint256" }],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "getTrack",
     "inputs": [{ "name": "trackId", "type": "uint256" }],
     "outputs": [
       { "name": "artist", "type": "address" },
       { "name": "metadataURI", "type": "string" },
-      { "name": "audioURI", "type": "string" },
+      { "name": "standardAudioURI", "type": "string" },
+      { "name": "encryptedPremiumCID", "type": "string" },
       { "name": "copies", "type": "uint256" },
       { "name": "sold", "type": "uint256" },
       { "name": "pricePerCopy", "type": "uint256" },
-      { "name": "collaboratorsGetRoyalty", "type": "bool" }
+      { "name": "availableForPrimary", "type": "bool" }
     ],
     "stateMutability": "view"
   },
   {
     "type": "function",
-    "name": "getListing",
+    "name": "getTrackCollaborators",
+    "inputs": [{ "name": "trackId", "type": "uint256" }],
+    "outputs": [
+      { "name": "wallets", "type": "address[]" },
+      { "name": "shares", "type": "uint256[]" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getSecondaryListing",
     "inputs": [{ "name": "tokenId", "type": "uint256" }],
     "outputs": [
       { "name": "seller", "type": "address" },
@@ -81,14 +92,38 @@
   },
   {
     "type": "function",
-    "name": "ownerOf",
-    "inputs": [{ "name": "tokenId", "type": "uint256" }],
-    "outputs": [{ "name": "", "type": "address" }],
+    "name": "getAvailablePrimaryListings",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256[]" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getActiveSecondaryListings",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256[]" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "ownsTrackCopy",
+    "inputs": [
+      { "name": "trackId", "type": "uint256" },
+      { "name": "wallet", "type": "address" }
+    ],
+    "outputs": [{ "name": "owned", "type": "bool" }],
     "stateMutability": "view"
   },
   {
     "type": "function",
     "name": "trackCount",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "nextTokenId",
     "inputs": [],
     "outputs": [{ "name": "", "type": "uint256" }],
     "stateMutability": "view"
@@ -101,8 +136,46 @@
     "stateMutability": "view"
   },
   {
+    "type": "function",
+    "name": "hasBoughtPrimary",
+    "inputs": [
+      { "name": "trackId", "type": "uint256" },
+      { "name": "wallet", "type": "address" }
+    ],
+    "outputs": [{ "name": "", "type": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "ownerOf",
+    "inputs": [{ "name": "tokenId", "type": "uint256" }],
+    "outputs": [{ "name": "", "type": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "balanceOf",
+    "inputs": [{ "name": "owner", "type": "address" }],
+    "outputs": [{ "name": "", "type": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "tokenURI",
+    "inputs": [{ "name": "tokenId", "type": "uint256" }],
+    "outputs": [{ "name": "", "type": "string" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "setPlatformWallet",
+    "inputs": [{ "name": "_platformWallet", "type": "address" }],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
     "type": "event",
-    "name": "TrackMinted",
+    "name": "TrackCreated",
     "inputs": [
       { "name": "trackId", "type": "uint256", "indexed": true },
       { "name": "artist", "type": "address", "indexed": true },
@@ -112,8 +185,9 @@
   },
   {
     "type": "event",
-    "name": "TrackPurchased",
+    "name": "PrimarySale",
     "inputs": [
+      { "name": "trackId", "type": "uint256", "indexed": true },
       { "name": "tokenId", "type": "uint256", "indexed": true },
       { "name": "buyer", "type": "address", "indexed": true },
       { "name": "price", "type": "uint256", "indexed": false }
@@ -121,7 +195,7 @@
   },
   {
     "type": "event",
-    "name": "ListedForResale",
+    "name": "SecondaryListingCreated",
     "inputs": [
       { "name": "tokenId", "type": "uint256", "indexed": true },
       { "name": "seller", "type": "address", "indexed": true },
@@ -130,11 +204,27 @@
   },
   {
     "type": "event",
-    "name": "ResalePurchased",
+    "name": "SecondaryListingCancelled",
+    "inputs": [
+      { "name": "tokenId", "type": "uint256", "indexed": true },
+      { "name": "seller", "type": "address", "indexed": true }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "SecondarySale",
     "inputs": [
       { "name": "tokenId", "type": "uint256", "indexed": true },
       { "name": "buyer", "type": "address", "indexed": true },
       { "name": "price", "type": "uint256", "indexed": false }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "PlatformWalletUpdated",
+    "inputs": [
+      { "name": "oldWallet", "type": "address", "indexed": true },
+      { "name": "newWallet", "type": "address", "indexed": true }
     ]
   }
 ]

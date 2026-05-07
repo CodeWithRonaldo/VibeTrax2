@@ -1,9 +1,8 @@
-import { getDefaultConfig } from '@rainbow-me/rainbowkit'
-import { mezoTestnet } from './chains'
+import { getConfig } from "@mezo-org/passport";
 
-export const wagmiConfig = getDefaultConfig({
-  appName: 'VibeTrax',
-  projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'vibetrax-demo',
-  chains: [mezoTestnet],
-  ssr: false,
-})
+export const wagmiConfig = getConfig({
+  appName: "VibeTrax",
+  walletConnectProjectId:
+    import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || "vibetrax-demo",
+  mezoNetwork: "testnet",
+});

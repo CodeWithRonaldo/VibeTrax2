@@ -1,32 +1,34 @@
-import { useState } from 'react'
-import { useReadContract } from 'wagmi'
-import NFTCard from '../../components/common/NFTCard/NFTCard'
-import Spinner from '../../components/common/Spinner/Spinner'
-import Input from '../../components/common/Input/Input'
-import styles from './Marketplace.module.css'
-import VibeTraxABI from '../../contracts/abi/VibeTrax.json'
-import { VIBETRAX_ADDRESS } from '../../config/contracts'
-import TrackCardFull from './TrackCardFull'
+import { useState } from "react";
+import { useReadContract } from "wagmi";
+import NFTCard from "../../components/common/NFTCard/NFTCard";
+import Spinner from "../../components/common/Spinner/Spinner";
+import Input from "../../components/common/Input/Input";
+import styles from "./Marketplace.module.css";
+import VibeTraxABI from "../../contracts/abi/VibeTrax.json";
+import { VIBETRAX_ADDRESS } from "../../config/contracts";
+import TrackCardFull from "./TrackCardFull";
 
 export default function Marketplace() {
-  const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState('all')
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all");
 
   const { data: trackCount, isLoading } = useReadContract({
     address: VIBETRAX_ADDRESS,
     abi: VibeTraxABI,
-    functionName: 'trackCount',
-  })
+    functionName: "trackCount",
+  });
 
-  const count = trackCount ? Number(trackCount) : 0
-  const trackIds = Array.from({ length: count }, (_, i) => i)
+  const count = trackCount ? Number(trackCount) : 0;
+
+  const trackIds = Array.from({ length: count }, (_, i) => i);
 
   return (
     <div className={styles.page}>
       <div className={styles.header}>
         <h1 className={styles.title}>Marketplace</h1>
         <p className={styles.subtitle}>
-          Own the music. Every track is an NFT — buy a copy, unlock high-quality audio.
+          Own the music. Every track is an NFT — buy a copy, unlock high-quality
+          audio.
         </p>
       </div>
 
@@ -39,10 +41,13 @@ export default function Marketplace() {
           className={styles.searchInput}
         />
         <div className={styles.filters}>
-          {['all', 'available', 'sold out'].map((f) => (
+          {["all", "available", "sold out"].map((f) => (
             <button
               key={f}
-              className={[styles.filterBtn, filter === f ? styles.activeFilter : ''].join(' ')}
+              className={[
+                styles.filterBtn,
+                filter === f ? styles.activeFilter : "",
+              ].join(" ")}
               onClick={() => setFilter(f)}
             >
               {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -65,10 +70,15 @@ export default function Marketplace() {
       ) : (
         <div className={styles.grid}>
           {trackIds.map((id) => (
-            <TrackCardFull key={id} trackId={id} filter={filter} search={search} />
+            <TrackCardFull
+              key={id}
+              trackId={id}
+              filter={filter}
+              search={search}
+            />
           ))}
         </div>
       )}
     </div>
-  )
+  );
 }

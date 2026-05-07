@@ -40,7 +40,7 @@ function OwnedNFTCard({ tokenId, ownerAddress }) {
   const { data: listing } = useReadContract({
     address: VIBETRAX_ADDRESS,
     abi: VibeTraxABI,
-    functionName: 'getListing',
+    functionName: 'getSecondaryListing',
     args: [BigInt(tokenId)],
   })
 
@@ -58,12 +58,12 @@ function OwnedNFTCard({ tokenId, ownerAddress }) {
   if (!owner || !ownerAddress || owner.toLowerCase() !== ownerAddress.toLowerCase()) return null
   if (!track) return null
 
-  const [artist, , audioURI, , , pricePerCopy] = track
+  const [artist, , standardAudioURI, , , , pricePerCopy] = track
   const isListed = listing?.active
   const listedPrice = listing?.price
   const minPrice = formatMUSD(pricePerCopy)
   const cover = meta?.image ? resolveIPFS(meta.image) : null
-  const audioSrc = resolveIPFS(audioURI)
+  const audioSrc = resolveIPFS(standardAudioURI)
 
   const handleList = async () => {
     try {

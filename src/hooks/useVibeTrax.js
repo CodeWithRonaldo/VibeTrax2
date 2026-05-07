@@ -1,200 +1,232 @@
-import { useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
-import { useQueryClient } from '@tanstack/react-query'
-import { parseUnits, maxUint256 } from 'viem'
-import VibeTraxABI from '../contracts/abi/VibeTrax.json'
-import { VIBETRAX_ADDRESS, MUSD_ADDRESS } from '../config/contracts'
+import {
+  useReadContract,
+  useWriteContract,
+  useWaitForTransactionReceipt,
+} from "wagmi";
+import { useQueryClient } from "@tanstack/react-query";
+import { parseUnits, maxUint256 } from "viem";
+import VibeTraxABI from "../contracts/abi/VibeTrax.json";
+import { VIBETRAX_ADDRESS, MUSD_ADDRESS } from "../config/contracts";
 
 // Minimal ERC20 ABI for MUSD approval
 const ERC20_ABI = [
   {
-    type: 'function',
-    name: 'approve',
-    inputs: [{ name: 'spender', type: 'address' }, { name: 'amount', type: 'uint256' }],
-    outputs: [{ name: '', type: 'bool' }],
-    stateMutability: 'nonpayable',
+    type: "function",
+    name: "approve",
+    inputs: [
+      { name: "spender", type: "address" },
+      { name: "amount", type: "uint256" },
+    ],
+    outputs: [{ name: "", type: "bool" }],
+    stateMutability: "nonpayable",
   },
   {
-    type: 'function',
-    name: 'allowance',
-    inputs: [{ name: 'owner', type: 'address' }, { name: 'spender', type: 'address' }],
-    outputs: [{ name: '', type: 'uint256' }],
-    stateMutability: 'view',
+    type: "function",
+    name: "allowance",
+    inputs: [
+      { name: "owner", type: "address" },
+      { name: "spender", type: "address" },
+    ],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    type: 'function',
-    name: 'balanceOf',
-    inputs: [{ name: 'account', type: 'address' }],
-    outputs: [{ name: '', type: 'uint256' }],
-    stateMutability: 'view',
+    type: "function",
+    name: "balanceOf",
+    inputs: [{ name: "account", type: "address" }],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
   },
-]
+];
 
 export function useTrackCount() {
   return useReadContract({
     address: VIBETRAX_ADDRESS,
     abi: VibeTraxABI,
-    functionName: 'trackCount',
-  })
+    functionName: "trackCount",
+  });
 }
 
 export function useTrack(trackId) {
   return useReadContract({
     address: VIBETRAX_ADDRESS,
     abi: VibeTraxABI,
-    functionName: 'getTrack',
+    functionName: "getTrack",
     args: [trackId],
     enabled: trackId !== undefined && trackId !== null,
-  })
+  });
 }
 
 export function useListing(tokenId) {
   return useReadContract({
     address: VIBETRAX_ADDRESS,
     abi: VibeTraxABI,
-    functionName: 'getListing',
+    functionName: "getSecondaryListing",
     args: [tokenId],
     enabled: tokenId !== undefined && tokenId !== null,
-  })
+  });
 }
 
 export function useTokenOwner(tokenId) {
   return useReadContract({
     address: VIBETRAX_ADDRESS,
     abi: VibeTraxABI,
-    functionName: 'ownerOf',
+    functionName: "ownerOf",
     args: [tokenId],
     enabled: tokenId !== undefined && tokenId !== null,
-  })
+  });
 }
 
 export function useTokenToTrack(tokenId) {
   return useReadContract({
     address: VIBETRAX_ADDRESS,
     abi: VibeTraxABI,
-    functionName: 'tokenToTrack',
+    functionName: "tokenToTrack",
     args: [tokenId],
     enabled: tokenId !== undefined && tokenId !== null,
-  })
+  });
 }
 
 export function useMUSDBalance(address) {
   return useReadContract({
     address: MUSD_ADDRESS,
     abi: ERC20_ABI,
-    functionName: 'balanceOf',
+    functionName: "balanceOf",
     args: [address],
     enabled: !!address,
-  })
+  });
 }
 
 export function useMintTrack() {
-  const { writeContractAsync, isPending, data: hash } = useWriteContract()
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash })
+  const { writeContractAsync, isPending, data: hash } = useWriteContract();
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   const mintTrack = async ({
     metadataURI,
-    audioURI,
+    standardAudioURI,
+    encryptedPremiumCID,
     copies,
     pricePerCopy,
     collaborators,
-    primaryShares,
-    collaboratorsGetRoyalty,
+    collaboratorShares,
   }) => {
     return writeContractAsync({
       address: VIBETRAX_ADDRESS,
       abi: VibeTraxABI,
-      functionName: 'mintTrack',
+      functionName: "createTrack",
       args: [
         metadataURI,
-        audioURI,
+        standardAudioURI,
+        encryptedPremiumCID,
         BigInt(copies),
         parseUnits(String(pricePerCopy), 18),
         collaborators,
-        primaryShares.map((s) => BigInt(s)),
-        collaboratorsGetRoyalty,
+        collaboratorShares.map((s) => BigInt(s)),
       ],
-    })
-  }
+    });
+  };
 
-  return { mintTrack, isPending, isConfirming, isSuccess, hash }
+  return { mintTrack, isPending, isConfirming, isSuccess, hash };
 }
 
 export function useApproveMUSD() {
-  const { writeContractAsync, isPending, data: hash } = useWriteContract()
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash })
+  const { writeContractAsync, isPending, data: hash } = useWriteContract();
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   const approve = async () => {
     return writeContractAsync({
       address: MUSD_ADDRESS,
       abi: ERC20_ABI,
-      functionName: 'approve',
+      functionName: "approve",
       args: [VIBETRAX_ADDRESS, maxUint256],
-    })
-  }
+    });
+  };
 
-  return { approve, isPending, isConfirming, isSuccess, hash }
+  return { approve, isPending, isConfirming, isSuccess, hash };
 }
 
 export function useBuyTrack() {
-  const { writeContractAsync, isPending, data: hash } = useWriteContract()
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash })
+  const { writeContractAsync, isPending, data: hash } = useWriteContract();
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   const buyTrack = async (trackId) => {
     return writeContractAsync({
       address: VIBETRAX_ADDRESS,
       abi: VibeTraxABI,
-      functionName: 'buyTrack',
+      functionName: "buyPrimaryCopy",
       args: [BigInt(trackId)],
-    })
-  }
+    });
+  };
 
-  return { buyTrack, isPending, isConfirming, isSuccess, hash }
+  return { buyTrack, isPending, isConfirming, isSuccess, hash };
 }
 
 export function useListForResale() {
-  const { writeContractAsync, isPending, data: hash } = useWriteContract()
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash })
+  const { writeContractAsync, isPending, data: hash } = useWriteContract();
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   const listForResale = async (tokenId, price) => {
     return writeContractAsync({
       address: VIBETRAX_ADDRESS,
       abi: VibeTraxABI,
-      functionName: 'listForResale',
+      functionName: "listForSale",
       args: [BigInt(tokenId), parseUnits(String(price), 18)],
-    })
-  }
+    });
+  };
 
-  return { listForResale, isPending, isConfirming, isSuccess, hash }
+  return { listForResale, isPending, isConfirming, isSuccess, hash };
 }
 
 export function useBuyResale() {
-  const { writeContractAsync, isPending, data: hash } = useWriteContract()
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash })
+  const { writeContractAsync, isPending, data: hash } = useWriteContract();
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   const buyResale = async (tokenId) => {
     return writeContractAsync({
       address: VIBETRAX_ADDRESS,
       abi: VibeTraxABI,
-      functionName: 'buyResale',
+      functionName: "buySecondaryCopy",
       args: [BigInt(tokenId)],
-    })
-  }
+    });
+  };
 
-  return { buyResale, isPending, isConfirming, isSuccess, hash }
+  return { buyResale, isPending, isConfirming, isSuccess, hash };
 }
 
 export function useCancelListing() {
-  const { writeContractAsync, isPending, data: hash } = useWriteContract()
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash })
+  const { writeContractAsync, isPending, data: hash } = useWriteContract();
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   const cancelListing = async (tokenId) => {
     return writeContractAsync({
       address: VIBETRAX_ADDRESS,
       abi: VibeTraxABI,
-      functionName: 'cancelListing',
+      functionName: "cancelListing",
       args: [BigInt(tokenId)],
-    })
-  }
+    });
+  };
 
-  return { cancelListing, isPending, isConfirming, isSuccess, hash }
+  return { cancelListing, isPending, isConfirming, isSuccess, hash };
+}
+
+export function useMUSDAllowance(owner) {
+  return useReadContract({
+    address: MUSD_ADDRESS,
+    abi: ERC20_ABI,
+    functionName: "allowance",
+    args: [owner, VIBETRAX_ADDRESS],
+    enabled: !!owner,
+  });
 }

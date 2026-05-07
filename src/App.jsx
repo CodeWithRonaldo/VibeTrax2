@@ -1,19 +1,20 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { WagmiProvider } from 'wagmi'
-import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import '@rainbow-me/rainbowkit/styles.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { WagmiProvider } from "wagmi";
+import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { wagmiConfig } from './config/wagmi'
-import Layout from './components/layout/Layout/Layout'
-import Home from './pages/Home/Home'
-import Marketplace from './pages/Marketplace/Marketplace'
-import TrackDetail from './pages/TrackDetail/TrackDetail'
-import Upload from './pages/Upload/Upload'
-import ArtistDashboard from './pages/ArtistDashboard/ArtistDashboard'
-import CollectorDashboard from './pages/CollectorDashboard/CollectorDashboard'
+import { wagmiConfig } from "./config/wagmi";
+import Layout from "./components/layout/Layout/Layout";
+import Home from "./pages/Home/Home";
+import Marketplace from "./pages/Marketplace/Marketplace";
+import TrackDetail from "./pages/TrackDetail/TrackDetail";
+import Upload from "./pages/Upload/Upload";
+import ArtistDashboard from "./pages/ArtistDashboard/ArtistDashboard";
+import CollectorDashboard from "./pages/CollectorDashboard/CollectorDashboard";
+import "@rainbow-me/rainbowkit/styles.css";
+import { mezoTestnet } from "@mezo-org/passport";
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 export default function App() {
   return (
@@ -21,11 +22,12 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider
           theme={darkTheme({
-            accentColor: '#7c3aed',
-            accentColorForeground: 'white',
-            borderRadius: 'medium',
-            fontStack: 'system',
+            accentColor: "#7c3aed",
+            accentColorForeground: "white",
+            borderRadius: "medium",
+            fontStack: "system",
           })}
+          initialChain={mezoTestnet}
         >
           <BrowserRouter>
             <Layout>
@@ -42,5 +44,5 @@ export default function App() {
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
-  )
+  );
 }

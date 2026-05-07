@@ -20,7 +20,7 @@ export default function TrackCardFull({ trackId, filter, search }) {
 
   if (!track) return null
 
-  const [artist, , , copies, sold, pricePerCopy] = track
+  const [artist, , , , copies, sold, pricePerCopy] = track
   const available = Number(copies) - Number(sold)
   const isSoldOut = available === 0
 

@@ -1,5 +1,5 @@
 require("@nomicfoundation/hardhat-ethers");
-require("dotenv").config();
+require("dotenv").config({ path: ".env.local" });
 
 module.exports = {
   solidity: {
@@ -10,7 +10,7 @@ module.exports = {
     mezoTestnet: {
       url: "https://rpc.test.mezo.org",
       chainId: 31611,
-      accounts: [process.env.PRIVATE_KEY],
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
   },
 };

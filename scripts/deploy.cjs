@@ -4,7 +4,7 @@ async function main() {
   const [deployer] = await hre.ethers.getSigners();
   console.log("Deploying with:", deployer.address);
 
-  const musd = "0x637e22A1EBbca50EA2d34027c238317fD10003eB";
+  const musd = "0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503";
   const platformWallet = deployer.address; // change to your platform wallet
 
   const VibeTrax = await hre.ethers.getContractFactory("VibeTrax");
@@ -14,4 +14,7 @@ async function main() {
   console.log("VibeTrax deployed to:", await vibetrax.getAddress());
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});
