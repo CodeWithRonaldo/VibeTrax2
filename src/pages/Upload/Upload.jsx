@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { useAccount } from 'wagmi'
+import { useAccount, usePublicClient } from 'wagmi'
 import { useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 import { useMintTrack } from '../../hooks/useVibeTrax'
 import { uploadFileToPinata, uploadJSONToPinata } from '../../utils/pinata'
 import Button from '../../components/common/Button/Button'
@@ -13,6 +14,8 @@ const EMPTY_COLLABORATOR = { address: '', share: '' }
 export default function Upload() {
   const { isConnected, address } = useAccount()
   const navigate = useNavigate()
+  const publicClient = usePublicClient()
+  const queryClient = useQueryClient()
   const { mintTrack, isPending, isConfirming } = useMintTrack()
 
   const [form, setForm] = useState({
@@ -112,7 +115,7 @@ export default function Upload() {
       const collabAddresses = collaborators.map((c) => c.address)
       const collabShares = collaborators.map((c) => Math.round(parseFloat(c.share) * 100))
 
-      await mintTrack({
+      const txHash = await mintTrack({
         metadataURI,
         standardAudioURI: audioURI,
         encryptedPremiumCID: audioURI,
@@ -121,6 +124,10 @@ export default function Upload() {
         collaborators: collabAddresses,
         collaboratorShares: collabShares,
       })
+
+      setUploadStep('Confirming on-chain...')
+      await publicClient.waitForTransactionReceipt({ hash: txHash })
+      queryClient.invalidateQueries()
 
       setUploadStep('Minted successfully!')
       setTimeout(() => navigate('/artist-dashboard'), 1500)

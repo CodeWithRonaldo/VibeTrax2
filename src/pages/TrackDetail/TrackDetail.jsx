@@ -1,13 +1,11 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useAccount, usePublicClient } from 'wagmi'
-import { useReadContract } from 'wagmi'
-import { parseUnits } from 'viem'
+import { useAccount, usePublicClient, useReadContract } from 'wagmi'
 import VibeTraxABI from '../../contracts/abi/VibeTrax.json'
 import { VIBETRAX_ADDRESS } from '../../config/contracts'
 import { useMetadata } from '../../hooks/useMetadata'
-import { useBuyTrack, useListForResale, useBuyResale, useCancelListing, useApproveMUSD, useMUSDAllowance } from '../../hooks/useVibeTrax'
-import { formatMUSD, shortenAddress, calcPlatformFee, calcRoyalty, calcSellerProceeds } from '../../utils/format'
+import { useBuyTrack, useListForResale, useApproveMUSD } from '../../hooks/useVibeTrax'
+import { formatMUSD, shortenAddress, calcPlatformFee } from '../../utils/format'
 import { resolveIPFS } from '../../utils/pinata'
 import Button from '../../components/common/Button/Button'
 import Badge from '../../components/common/Badge/Badge'
@@ -32,14 +30,19 @@ export default function TrackDetail() {
     args: [BigInt(trackId)],
   })
 
+  const { data: isOwner } = useReadContract({
+    address: VIBETRAX_ADDRESS,
+    abi: VibeTraxABI,
+    functionName: 'ownsTrackCopy',
+    args: [BigInt(trackId), address],
+    enabled: !!address,
+  })
+
   const { data: meta } = useMetadata(track ? track[1] : null)
 
   const { buyTrack, isPending: isBuying } = useBuyTrack()
   const { approve, isPending: isApproving } = useApproveMUSD()
   const { listForResale, isPending: isListing } = useListForResale()
-  const { buyResale, isPending: isBuyingResale } = useBuyResale()
-  const { cancelListing, isPending: isCancelling } = useCancelListing()
-  const { data: allowance } = useMUSDAllowance(address)
 
   if (isLoading) {
     return (
@@ -113,7 +116,7 @@ export default function TrackDetail() {
             title={meta?.name}
             artist={meta?.artist || shortenAddress(artist)}
             cover={cover}
-            isOwner={false}
+            isOwner={!!isOwner || isArtist}
           />
         </div>
 
@@ -189,12 +192,6 @@ export default function TrackDetail() {
               </p>
             )}
 
-            {/* Debug: Show allowance */}
-            {isConnected && allowance !== undefined && (
-              <p style={{ fontSize: '12px', color: '#999', marginTop: '10px' }}>
-                Current allowance: {allowance > 0n ? 'Set ✓' : 'Not set ✗'} ({allowance?.toString()})
-              </p>
-            )}
           </div>
 
           {/* Resale section — show if connected owner */}

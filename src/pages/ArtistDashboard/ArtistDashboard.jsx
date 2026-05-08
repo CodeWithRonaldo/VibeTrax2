@@ -78,17 +78,23 @@ export default function ArtistDashboard() {
   const { address, isConnected } = useAccount()
   const queryClient = useQueryClient()
   const { data: musdBalance } = useMUSDBalance(address)
-
-  // Invalidate all contract reads when wallet changes
-  useEffect(() => {
-    queryClient.invalidateQueries()
-  }, [address])
+  const [visibleTrackIds, setVisibleTrackIds] = useState(new Set())
 
   const { data: trackCount, isLoading } = useReadContract({
     address: VIBETRAX_ADDRESS,
     abi: VibeTraxABI,
     functionName: 'trackCount',
   })
+
+  const count = trackCount ? Number(trackCount) : 0
+
+  useEffect(() => {
+    queryClient.invalidateQueries()
+  }, [address])
+
+  useEffect(() => {
+    setVisibleTrackIds(new Set())
+  }, [address, count])
 
   if (!isConnected) {
     return (
@@ -100,12 +106,7 @@ export default function ArtistDashboard() {
     )
   }
 
-  const count = trackCount ? Number(trackCount) : 0
   const trackIds = Array.from({ length: count }, (_, i) => i)
-  const [visibleTrackIds, setVisibleTrackIds] = useState(new Set())
-
-  // Reset when address or trackCount changes
-  useEffect(() => { setVisibleTrackIds(new Set()) }, [address, count])
 
   const handleTrackVisible = (trackId) => {
     setVisibleTrackIds((prev) => {
