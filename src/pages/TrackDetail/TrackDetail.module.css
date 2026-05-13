@@ -204,6 +204,21 @@
   margin: 0;
 }
 
+.collaboratorRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.35rem;
+}
+
+.collaboratorShare {
+  font-size: 0.75rem;
+  color: #7c3aed;
+  white-space: nowrap;
+  margin: 0;
+}
+
 /* Resale modal */
 .resaleModal { display: flex; flex-direction: column; gap: 1.25rem; }
 

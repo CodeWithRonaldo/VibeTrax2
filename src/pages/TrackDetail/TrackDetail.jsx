@@ -38,6 +38,13 @@ export default function TrackDetail() {
     enabled: !!address,
   })
 
+  const { data: collaborators } = useReadContract({
+    address: VIBETRAX_ADDRESS,
+    abi: VibeTraxABI,
+    functionName: 'getTrackCollaborators',
+    args: [BigInt(trackId)],
+  })
+
   const { data: meta } = useMetadata(track ? track[1] : null)
 
   const { buyTrack, isPending: isBuying } = useBuyTrack()
@@ -228,6 +235,20 @@ export default function TrackDetail() {
             <p className={styles.artistCardLabel}>Artist</p>
             <p className={styles.artistCardAddress}>{artist}</p>
           </div>
+
+          {collaborators?.[0]?.length > 0 && (
+            <div className={styles.artistCard}>
+              <p className={styles.artistCardLabel}>Collaborators</p>
+              {collaborators[0].map((wallet, i) => (
+                <div key={wallet} className={styles.collaboratorRow}>
+                  <p className={styles.artistCardAddress}>{wallet}</p>
+                  <p className={styles.collaboratorShare}>
+                    {Number(collaborators[1][i]) / 100}% primary share
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
